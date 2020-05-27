@@ -244,7 +244,8 @@ def create_venue_form():
 
 @app.route('/venues/create', methods=['POST'])
 def create_venue_submission():
-    print(request.get_json())
+    print("\ncreating new Venue:\n",request.form)
+    
     # TODO: insert form data as a new Venue record in the db, instead
     # TODO: modify data to be the data object returned from db insertion
 

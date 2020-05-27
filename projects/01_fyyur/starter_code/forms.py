@@ -1,7 +1,9 @@
 from datetime import datetime
 from flask_wtf import Form
-from wtforms import StringField, SelectField, SelectMultipleField, DateTimeField
-from wtforms.validators import DataRequired, AnyOf, URL
+from wtforms import StringField, SelectField, SelectMultipleField, DateTimeField, BooleanField, ValidationError
+from wtforms.validators import DataRequired, AnyOf, URL, Length, Regexp
+import re
+
 
 state_choices = [
     ('AL', 'AL'),
@@ -95,32 +97,45 @@ class ShowForm(Form):
 
 
 class VenueForm(Form):
+
     name = StringField(
         'name', validators=[DataRequired()]
     )
-    city = StringField(
-        'city', validators=[DataRequired()]
-    )
-    state = SelectField(
-        'state', validators=[DataRequired()],
-        choices=state_choices
-    )
-    address = StringField(
-        'address', validators=[DataRequired()]
-    )
-    phone = StringField(
-        'phone'
-    )
-    image_link = StringField(
-        'image_link'
-    )
     genres = SelectMultipleField(
-        # TODO implement enum restriction
-        'genres', validators=[DataRequired()],
+        # TODONE implement enum restriction
+        'genres', validators=[DataRequired(), AnyOf(genre_choices)],
         choices=genre_choices
     )
+    address = StringField(
+        'address', validators=[DataRequired(), Length(max=120)]
+    )
+    city = StringField(
+        'city', validators=[DataRequired(), Length(max=120)]
+    )
+    state = SelectField(
+        'state', validators=[DataRequired(), Length(max=120)],
+        choices=state_choices
+    )
+    phone = StringField(
+        'phone', validators=[DataRequired(), Regexp("^[0-9]*$", message="Phone number should only contain digits")]
+    )
+    website = StringField(
+        'website', validators=[URL(
+            require_tld=True, message="Not a valid URL"), Length(max=120)]
+    )
     facebook_link = StringField(
-        'facebook_link', validators=[URL()]
+        'facebook_link', validators=[URL(
+            require_tld=True, message="Not a valid URL")]
+    )
+    seeking_talent = BooleanField(
+        'seeking_talent'
+    )
+    seeking_description = StringField(
+        'seeking_description', [Length(max=500)]
+    )
+    image_link = StringField(
+        'image_link', validators=[URL(
+            require_tld=True, message="Not a valid URL"), Length(max=500)]
     )
 
 
@@ -136,20 +151,35 @@ class ArtistForm(Form):
         choices=state_choices
     )
     phone = StringField(
-        # TODO implement validation logic for state
-        'phone'
+        # TODONE implement validation logic for state
+        'phone', validators=[DataRequired(), Regexp("^[0-9]*$", message="Phone number should only contain digits")]
     )
     image_link = StringField(
         'image_link'
     )
     genres = SelectMultipleField(
-        # TODO implement enum restriction
+        # TODONE implement enum restriction
         'genres', validators=[DataRequired()],
         choices=genre_choices
     )
     facebook_link = StringField(
-        # TODO implement enum restriction
+        # TODONE implement enum restriction
         'facebook_link', validators=[URL()]
     )
+    seeking_talent = BooleanField(
+        'seeking_talent'
+    )
+    seeking_description = StringField(
+        'seeking_description', [Length(max=500)]
+    )
+    image_link = StringField(
+        'image_link', validators=[URL(
+            require_tld=True, message="Not a valid URL"), Length(max=500)]
+    )
+    website = StringField(
+        'website', validators=[URL(
+            require_tld=True, message="Not a valid URL"), Length(max=120)]
+    )
+
 
 # TODO IMPLEMENT NEW ARTIST FORM AND NEW SHOW FORM
