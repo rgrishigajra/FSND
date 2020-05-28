@@ -154,12 +154,9 @@ class ArtistForm(Form):
         # TODONE implement validation logic for state
         'phone', validators=[DataRequired(), Regexp("^[0-9]*$", message="Phone number should only contain digits")]
     )
-    image_link = StringField(
-        'image_link'
-    )
     genres = SelectMultipleField(
         # TODONE implement enum restriction
-        'genres', validators=[DataRequired()],
+        'genres', validators=[DataRequired(), AnyOf(genre_choices)],
         choices=genre_choices
     )
     facebook_link = StringField(
